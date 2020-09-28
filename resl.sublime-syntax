@@ -1,0 +1,140 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+name: resl
+file_extensions:
+  - resl
+scope: source.resl
+contexts:
+  main:
+    - include : comment
+    - include : package
+    - include : import
+    - include : type
+    - include : component
+  comment:
+    - match: \-\-
+      scope: punctuation.definition.comment.resl
+      push:
+        - meta_include_prototype: false
+        - meta_scope: comment.block.resl
+        - match: $
+          pop: true
+
+  package:
+    - match: (package)\s+([A-Za-z][A-Za-z0-9_\.]*)
+      scope: punctuation.section.package.resl
+      captures:
+        1: keyword.control.import.resl
+
+  import:
+    - match: (import)\s+([A-Za-z][A-Za-z0-9_.]*)
+      scope: punctuation.section.import.resl
+      captures:
+        1: keyword.control.import.resl
+
+  type:
+    - match: (type)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*\{
+      scope: punctuation.section.type.resl
+      captures:
+        1: storage.type.struct.resl
+        2: entity.name.struct.resl
+      push:
+        - meta_scope: meta.type.resl
+        - match: '\}'
+          scope: punctuation.section.type.resl
+          pop: true
+        - include: comment
+        - include: normal_field
+        - include: map_field
+        - include: list_field
+        - include: type
+
+  component:
+    - match: (component)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*(\d+)\s*\{
+      scope: punctuation.section.component.resl
+      captures:
+        1: storage.type.class.resl
+        2: entity.name.class.resl
+        3: constant.numeric.resl
+      push:
+        - meta_scope: meta.component.resl
+        - match: '\}'
+          scope: punctuation.section.component.resl
+          pop: true
+        - include: comment
+        - include: normal_field
+        - include: map_field
+        - include: list_field
+        - include: event_field
+        - include: command_field
+
+  internal:
+    - match: (int|double|string)
+      scope: punctuation.section.internal.resl
+      captures:
+        1: storage.type.resl
+
+  word:
+    - match: ([A-Za-z][A-Za-z0-9_.]*)
+      scope: punctuation.section.word.resl
+      captures:
+        1: entity.name.type.resl
+
+  event_field:
+    - match: (event)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)\s*\)\s*=\s*(\d+)
+      scope: punctuation.section.event.resl
+      captures:
+        1: variable.parameter.resl
+        2: variable
+        3: storage.type.class.resl
+        4: constant.numeric.resl
+
+  command_field:
+    - match: (command)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(([A-Za-z][A-Za-z0-9_.]*)\)\s*([A-Za-z][A-Za-z0-9_.]*)\s*=\s*(\d+)
+      scope: punctuation.section.command.resl
+      captures:
+        1: variable.function.resl
+        2: variable
+        3: storage.type.class.resl
+        4: storage.type.class.resl
+        5: constant.numeric.resl
+
+  normal_field:
+    - match: ((int|double|string)|([A-Za-z][A-Za-z0-9_.]*))\s+([A-Za-z][A-Za-z0-9_.]*)\s*=\s*(\d+)
+      scope: punctuation.section.normal_filed.resl
+      captures:
+        2: storage.type.resl
+        3: entity.name.type.resl
+        4: variable
+        5: constant.numeric.resl
+
+  map_field:
+    - match: (map)\s*\<
+      scope: punctuation.section.map.resl
+      captures:
+        1: storage.type.resl
+
+      push:
+        - meta_scope: meta.map.resl
+        - match: '\>\s*([A-Za-z][A-Za-z0-9_.]*)\s*=\s*(\d+)\n'
+          pop: true
+          captures:
+            2: constant.numeric.resl
+        - include: internal
+        - include: word
+
+  list_field:
+    - match: (list)\s*\<
+      scope: punctuation.section.list.resl
+      captures:
+        1: storage.type.resl
+        
+      push:
+        - meta_scope: meta.list.resl
+        - match: '\>\s*([A-Za-z][A-Za-z0-9_.]*)\s*=\s*(\d+)\n'
+          pop: true
+          captures:
+            2: constant.numeric.resl
+        - include: internal
+        - include: word
