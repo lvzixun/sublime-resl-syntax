@@ -117,7 +117,7 @@ contexts:
 
       push:
         - meta_scope: meta.map.resl
-        - match: '\>\s*([A-Za-z][A-Za-z0-9_.]*)\s*=\s*(\d+)\n'
+        - match: '\>\s*([A-Za-z][A-Za-z0-9_.]*)\s*=\s*(\d+)'
           pop: true
           captures:
             2: constant.numeric.resl
@@ -129,10 +129,10 @@ contexts:
       scope: punctuation.section.list.resl
       captures:
         1: storage.type.resl
-        
+
       push:
         - meta_scope: meta.list.resl
-        - match: '\>\s*([A-Za-z][A-Za-z0-9_.]*)\s*=\s*(\d+)\n'
+        - match: '\>\s*([A-Za-z][A-Za-z0-9_.]*)\s*=\s*(\d+)'
           pop: true
           captures:
             2: constant.numeric.resl
