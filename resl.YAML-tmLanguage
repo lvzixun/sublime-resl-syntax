@@ -29,7 +29,7 @@ repository:
     end: $
 
   internal:
-    match: (int|double|string)
+    match: (int|double|string|bool)
     name: storage.type.resl
 
   word:
@@ -37,7 +37,7 @@ repository:
     name: entity.name.class.resl
 
   normal_field:
-    begin: ((int|double|string)|([A-Za-z][A-Za-z0-9_.]*))\s+([A-Za-z][A-Za-z0-9_.]*)
+    begin: ((int|double|string|bool)|([A-Za-z][A-Za-z0-9_.]*))\s+([A-Za-z][A-Za-z0-9_.]*)
     beginCaptures:
       '2': {name: storage.type.resl}
       '3': {name: entity.name.class.resl}
@@ -79,7 +79,7 @@ repository:
       '1': {name: constant.numeric.resl}
 
   command_field:
-    begin: (command)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(([A-Za-z][A-Za-z0-9_.]*)\)\s*([A-Za-z][A-Za-z0-9_.]*)
+    begin: (command)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(([A-Za-z][A-Za-z0-9_.]*)\)\s*([A-Za-z][A-Za-z0-9_.]*)?
     beginCaptures:
       '1': {name: keyword.operator.word}
       '2': {name: variable}
