@@ -69,7 +69,7 @@ repository:
     - include: '#word'
 
   event_field:
-    begin: (event)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)\s*\)
+    begin: (event)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)?\s*\)
     beginCaptures:
       '1': {name: keyword.operator.word}
       '2': {name: variable}

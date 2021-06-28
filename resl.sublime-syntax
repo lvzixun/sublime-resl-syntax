@@ -82,7 +82,7 @@ contexts:
         1: entity.name.type.resl
 
   event_field:
-    - match: (event)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)\s*\)\s*=\s*(\d+)
+    - match: (event)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)?\s*\)\s*=\s*(\d+)
       scope: punctuation.section.event.resl
       captures:
         1: variable.parameter.resl
