@@ -91,7 +91,7 @@ contexts:
         4: constant.numeric.resl
 
   command_field:
-    - match: (command)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(([A-Za-z][A-Za-z0-9_.]*)\)\s*([A-Za-z][A-Za-z0-9_.]*)?\s*=\s*(\d+)
+    - match: (command)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(([A-Za-z][A-Za-z0-9_.]*)?\)\s*([A-Za-z][A-Za-z0-9_.]*)?\s*=\s*(\d+)
       scope: punctuation.section.command.resl
       captures:
         1: variable.function.resl
