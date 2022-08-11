@@ -73,6 +73,7 @@ contexts:
         - include: event_field
         - include: command_field
         - include: attribute_field
+        - include: option_field
 
   enum:
     - match: (enum)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*\{
@@ -112,14 +113,14 @@ contexts:
     - match: (callable)\s*=\s*(SelfClient|AllClient|NoClient|All)
       scope: punctuation.section.callable.resl
       captures:
-        1: keyword.control.conditional
+        1: keyword.control.conditional.resl
         2: meta.enum.resl
 
   default:
     - match: (default)\s*=\s*((\d+)|(true|false)|(nil)|(\"[^\"]*\"))
       scope: punctuation.section.default.resl
       captures:
-        1: keyword.control.conditional
+        1: keyword.control.conditional.resl
         3: constant.numeric.resl
         4: constant.language.boolean.resl
         5: constant.language.null.resl
@@ -129,14 +130,14 @@ contexts:
     - match: (replicated)\s*=\s*(SelfClient|None|NoClient|All)
       scope: punctuation.section.replicated.resl
       captures:
-        1: keyword.control.conditional
+        1: keyword.control.conditional.resl
         2: meta.enum.resl
 
   persistent:
     - match: (persistent)\s*=\s*(true|false)
       scope: punctuation.section.persistent.resl
       captures:
-        1: keyword.control.conditional
+        1: keyword.control.conditional.resl
         2: constant.language.boolean.resl
 
 
@@ -162,19 +163,19 @@ contexts:
     - match: (event)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)?\s*\)\s*=\s*(\d+)
       scope: punctuation.section.event.resl
       captures:
-        1: variable.parameter.resl
-        2: variable
-        3: storage.type.class.resl
+        1: keyword.control.conditional
+        2: variable.function.resl
+        3: variable.parameter.resl
         4: constant.numeric.resl
 
   command_field:
     - match: (command)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)?\s*\)\s*([A-Za-z][A-Za-z0-9_.]*)?\s*=\s*(\d+)
       scope: punctuation.section.command.resl
       captures:
-        1: variable.function.resl
-        2: variable
-        3: storage.type.class.resl
-        4: storage.type.class.resl
+        1: keyword.control.conditional
+        2: variable.function.resl
+        3: variable.parameter.resl
+        4: variable.parameter.resl
         5: constant.numeric.resl
 
   normal_field:
@@ -183,7 +184,7 @@ contexts:
       captures:
         2: storage.type.resl
         3: entity.name.type.resl
-        4: variable
+        4: variable.other.member.resl
         5: constant.numeric.resl
 
   enum_field:
@@ -192,6 +193,14 @@ contexts:
       captures:
         1: variable
         2: constant.numeric.resl
+
+  option_field:
+    - match: (option)\s+(persistent|replicated)\s*=\s*(true|false)
+      scope: punctuation.section.option_field.resl
+      captures:
+        1: keyword.control.conditional.resl
+        2: variable
+        3: constant.language.boolean.resl
 
   service_field:
     - match: (rpc)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)\s*\)\s*([A-Za-z][A-Za-z0-9_.]*)?\s*=\s*(\d+)
