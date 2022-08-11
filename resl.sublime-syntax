@@ -13,6 +13,7 @@ contexts:
     - include : type
     - include : component
     - include : enum
+    - include : service
 
   comment:
     - match: \-\-
@@ -87,6 +88,20 @@ contexts:
         - include: comment
         - include: enum_field
 
+  service:
+    - match: (service)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*\{
+      scope: punctuation.section.service.resl
+      captures:
+        1: storage.type.service.resl
+        2: entity.name.service.resl
+      push:
+        - meta_scope: meta.service.resl
+        - match: '\}'
+          scope: punctuation.section.service.resl
+          pop: true
+        - include: comment
+        - include: service_field
+
   internal:
     - match: (int|double|string|bool)
       scope: punctuation.section.internal.resl
@@ -153,7 +168,7 @@ contexts:
         4: constant.numeric.resl
 
   command_field:
-    - match: (command)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(([A-Za-z][A-Za-z0-9_.]*)?\)\s*([A-Za-z][A-Za-z0-9_.]*)?\s*=\s*(\d+)
+    - match: (command)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)?\s*\)\s*([A-Za-z][A-Za-z0-9_.]*)?\s*=\s*(\d+)
       scope: punctuation.section.command.resl
       captures:
         1: variable.function.resl
@@ -177,6 +192,16 @@ contexts:
       captures:
         1: variable
         2: constant.numeric.resl
+
+  service_field:
+    - match: (rpc)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)\s*\)\s*([A-Za-z][A-Za-z0-9_.]*)?\s*=\s*(\d+)
+      scope: punctuation.section.service_field.resl
+      captures:
+        1: variable.function.resl
+        2: variable
+        3: storage.type.class.resl
+        4: storage.type.class.resl
+        5: constant.numeric.resl
 
   map_field:
     - match: (map)\s*\<
