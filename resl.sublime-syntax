@@ -12,6 +12,8 @@ contexts:
     - include : import
     - include : type
     - include : component
+    - include : enum
+
   comment:
     - match: \-\-
       scope: punctuation.definition.comment.resl
@@ -49,6 +51,7 @@ contexts:
         - include: map_field
         - include: list_field
         - include: type
+        - include: attribute_field
 
   component:
     - match: (component)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*(\d+)\s*\{
@@ -68,18 +71,77 @@ contexts:
         - include: list_field
         - include: event_field
         - include: command_field
+        - include: attribute_field
+
+  enum:
+    - match: (enum)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*\{
+      scope: punctuation.section.enum.resl
+      captures:
+        1: storage.type.enum.resl
+        2: entity.name.enum.resl
+      push:
+        - meta_scope: meta.enum.resl
+        - match: '\}'
+          scope: punctuation.section.enum.resl
+          pop: true
+        - include: comment
+        - include: enum_field
 
   internal:
     - match: (int|double|string|bool)
       scope: punctuation.section.internal.resl
       captures:
         1: storage.type.resl
+  
+  callable:
+    - match: (callable)\s*=\s*(SelfClient|AllClient|NoClient|All)
+      scope: punctuation.section.callable.resl
+      captures:
+        1: keyword.control.conditional
+        2: meta.enum.resl
+
+  default:
+    - match: (default)\s*=\s*((\d+)|(true|false)|(nil)|(\"[^\"]*\"))
+      scope: punctuation.section.default.resl
+      captures:
+        1: keyword.control.conditional
+        3: constant.numeric.resl
+        4: constant.language.boolean.resl
+        5: constant.language.null.resl
+        6: string.quoted.double.resl
+
+  replicated:
+    - match: (replicated)\s*=\s*(SelfClient|None|NoClient|All)
+      scope: punctuation.section.replicated.resl
+      captures:
+        1: keyword.control.conditional
+        2: meta.enum.resl
+
+  persistent:
+    - match: (persistent)\s*=\s*(true|false)
+      scope: punctuation.section.persistent.resl
+      captures:
+        1: keyword.control.conditional
+        2: constant.language.boolean.resl
+
 
   word:
     - match: ([A-Za-z][A-Za-z0-9_.]*)
       scope: punctuation.section.word.resl
       captures:
         1: entity.name.type.resl
+
+  attribute_field:
+    - match: \[\s*
+      scope: punctuation.section.attribute.resl
+      push:
+        - meta_scope: meta.attribute.resl
+        - match: \s*\]
+          pop: true
+        - include: callable
+        - include: default
+        - include: replicated
+        - include: persistent
 
   event_field:
     - match: (event)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)?\s*\)\s*=\s*(\d+)
@@ -108,6 +170,13 @@ contexts:
         3: entity.name.type.resl
         4: variable
         5: constant.numeric.resl
+
+  enum_field:
+    - match: ([A-Za-z][A-Za-z0-9_.]*)\s*=\s*(\d+)
+      scope: punctuation.section.enum_field.resl
+      captures:
+        1: variable
+        2: constant.numeric.resl
 
   map_field:
     - match: (map)\s*\<
