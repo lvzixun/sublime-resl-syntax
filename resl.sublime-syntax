@@ -206,10 +206,10 @@ contexts:
     - match: (rpc)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)\s*\)\s*([A-Za-z][A-Za-z0-9_.]*)?\s*=\s*(\d+)
       scope: punctuation.section.service_field.resl
       captures:
-        1: variable.function.resl
-        2: variable
-        3: storage.type.class.resl
-        4: storage.type.class.resl
+        1: keyword.control.conditional
+        2: variable.function.resl
+        3: variable.parameter.resl
+        4: variable.parameter.resl
         5: constant.numeric.resl
 
   map_field:
