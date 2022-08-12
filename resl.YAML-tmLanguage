@@ -9,6 +9,8 @@ patterns:
 - include: '#import'
 - include: '#type'
 - include: '#component'
+- include: '#enum'
+- include: '#service'
 repository:
   comment:
     patterns:
@@ -32,19 +34,53 @@ repository:
     match: (int|double|string|bool)
     name: storage.type.resl
 
+  callable:
+    match: (callable)\s*=\s*(SelfClient|AllClient|NoClient|All)
+    captures:
+      '1': {name: keyword.control.conditional.resl}
+      '2': {name: entity.name.enum.resl}
+  
+  default:
+    match: (default)\s*=\s*((\d+)|(true|false)|(nil)|(\"[^\"]*\"))
+    captures:
+      '1': {name: keyword.control.conditional.resl}
+      '3': {name: constant.numeric.resl}
+      '4': {name: constant.language.boolean.resl}
+      '5': {name: constant.language.null.resl}
+      '6': {name: string.quoted.double.resl}
+
+  replicated:
+    match: (replicated)\s*=\s*(SelfClient|None|NoClient|All)
+    captures:
+      '1': {name: keyword.control.conditional.resl}
+      '2': {name: entity.name.enum.resl}
+
+  persistent:
+    match: (persistent)\s*=\s*(true|false)
+    captures:
+      '1': {name: keyword.control.conditional.resl}
+      '2': {name: constant.language.boolean.resl}
+
   word:
     match: ([A-Za-z][A-Za-z0-9_\.]*)
     name: entity.name.class.resl
 
+  attribute_field:
+    begin: \[\s*
+    end: \s*\]
+    patterns:
+    - include: '#callable'
+    - include: '#default'
+    - include: '#replicated'
+    - include: '#persistent'
+
   normal_field:
-    begin: ((int|double|string|bool)|([A-Za-z][A-Za-z0-9_\.]*))\s+([A-Za-z][A-Za-z0-9_\.]*)
-    beginCaptures:
+    match: ((int|double|string|bool)|([A-Za-z][A-Za-z0-9_\.]*))\s+([A-Za-z][A-Za-z0-9_\.]*)\s*=\s*(\d+)
+    captures:
       '2': {name: storage.type.resl}
       '3': {name: entity.name.class.resl}
       '4': {name: variable}
-    end: \s*=\s*(\d+)
-    endCaptures:
-      '1': {name: constant.numeric.resl}
+      '5': {name: constant.numeric.resl}
 
   map_field:
     begin: (map)\s*\<
@@ -71,30 +107,48 @@ repository:
     - include: '#word'
 
   event_field:
-    begin: (event)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_\.]*)?\s*\)
-    beginCaptures:
+    match: (event)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_\.]*)?\s*\)\s*=\s*(\d+)
+    captures:
       '1': {name: keyword.operator.word}
-      '2': {name: variable}
-      '3': {name: entity.name.class.resl}
-    end: \s*=\s*(\d+)
-    endCaptures:
-      '1': {name: constant.numeric.resl}
+      '2': {name: variable.function.resl}
+      '3': {name: variable.parameter.resl}
+      '4': {name: constant.numeric.resl}
 
   command_field:
-    begin: (command)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*\(([A-Za-z][A-Za-z0-9_\.]*)?\)\s*([A-Za-z][A-Za-z0-9_\.]*)?
-    beginCaptures:
+    match: (command)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*\(([A-Za-z][A-Za-z0-9_\.]*)?\)\s*([A-Za-z][A-Za-z0-9_\.]*)?\s*=\s*(\d+)
+    captures:
       '1': {name: keyword.operator.word}
+      '2': {name: variable.function.resl}
+      '3': {name: variable.parameter.resl}
+      '4': {name: variable.parameter.resl}
+      '5': {name: constant.numeric.resl}
+
+  enum_field:
+    match: ([A-Za-z][A-Za-z0-9_.]*)\s*=\s*(\d+)
+    captures:
+      '1': {name: variable}
+      '2': {name: constant.numeric.resl}
+
+  option_field:
+    match: (option)\s+(persistent|replicated)\s*=\s*(true|false)
+    captures:
+      '1': {name: keyword.control.conditional.resl}
       '2': {name: variable}
-      '3': {name: entity.name.class.resl}
-      '4': {name: entity.name.class.resl}
-    end: \s*=\s*(\d+)
-    endCaptures:
-      '1': {name: constant.numeric.resl}
+      '3': {name: constant.language.boolean.resl}
+  
+  service_field:
+    match: (rpc)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)\s*\)\s*([A-Za-z][A-Za-z0-9_.]*)?\s*=\s*(\d+)
+    captures:
+      '1': {name: keyword.operator.word}
+      '2': {name: variable.function.resl}
+      '3': {name: variable.parameter.resl}
+      '4': {name: variable.parameter.resl}
+      '5': {name: constant.numeric.resl}
 
   type:
     begin: (type)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*\{
     beginCaptures:
-      '1': {name: keyword.operator.word}
+      '1': {name: storage.type.struct.resl}
       '2': {name: entity.name.struct.resl}
     end: \}
     patterns:
@@ -107,14 +161,37 @@ repository:
   component:
     begin: (component)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*(\d+)\s*\{
     beginCaptures:
-      '1': {name: keyword.operator.word}
+      '1': {name: storage.type.class.resl}
       '2': {name: entity.name.class.resl}
       '3': {name: constant.numeric.resl}
     end: \}
     patterns:
     - include: '#comment'
-    - include: '#normal_field'
     - include: '#map_field'
     - include: '#list_field'
     - include: '#event_field'
     - include: '#command_field'
+    - include: '#normal_field'
+    - include: '#attribute_field'
+    - include: '#option_field'
+
+  enum:
+    begin: (enum)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*\{
+    beginCaptures:
+      '1': {name: storage.type.enum.resl}
+      '2': {name: entity.name.enum.resl}
+    end: \}
+    patterns:
+    - include: '#comment'
+    - include: '#enum_field'
+  
+  service:
+    begin: (service)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*\{
+    beginCaptures:
+      '1': {name: storage.type.service.resl}
+      '2': {name: entity.name.service.resl}
+    end: \}
+    patterns:
+    - include: '#comment'
+    - include: '#service_field'
+
