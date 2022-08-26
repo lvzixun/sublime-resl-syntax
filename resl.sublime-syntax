@@ -12,6 +12,7 @@ contexts:
     - include : import
     - include : type
     - include : component
+    - include : extend
     - include : enum
     - include : service
 
@@ -53,6 +54,26 @@ contexts:
         - include: list_field
         - include: type
         - include: attribute_field
+
+  extend:
+    - match: (extend)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*\{
+      scope: punctuation.section.extend.resl
+      captures:
+        1: storage.type.class.resl
+        2: entity.name.class.resl
+      push:
+        - meta_scope: meta.extend.resl
+        - match: '\}'
+          scope: punctuation.section.extend.resl
+          pop: true
+        - include: comment
+        - include: normal_field
+        - include: map_field
+        - include: list_field
+        - include: event_field
+        - include: command_field
+        - include: attribute_field
+        - include: option_field
 
   component:
     - match: (component)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*(\d+)\s*\{
