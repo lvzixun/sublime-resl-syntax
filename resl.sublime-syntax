@@ -12,6 +12,7 @@ contexts:
     - include : import
     - include : type
     - include : component
+    - include : component_extend
     - include : extend
     - include : enum
     - include : service
@@ -91,6 +92,25 @@ contexts:
         - include: normal_field
         - include: map_field
         - include: list_field
+        - include: event_field
+        - include: command_field
+        - include: attribute_field
+        - include: option_field
+
+  component_extend:
+    - match: (component)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*(\d+)\s*=\s*([A-Za-z][A-Za-z0-9_\.]*)\s*\{
+      scope: punctuation.section.component.resl
+      captures:
+        1: storage.type.class.resl
+        2: entity.name.class.resl
+        3: constant.numeric.resl
+        4: entity.name.struct.resl
+      push:
+        - meta_scope: meta.component.resl
+        - match: '\}'
+          scope: punctuation.section.component.resl
+          pop: true
+        - include: comment
         - include: event_field
         - include: command_field
         - include: attribute_field
@@ -216,7 +236,7 @@ contexts:
         2: constant.numeric.resl
 
   option_field:
-    - match: (option)\s+(persistent|replicated)\s*=\s*(true|false)
+    - match: (option)\s+(persistent|replicated|rdr|rdr_update_old)\s*=\s*(true|false|all|client)
       scope: punctuation.section.option_field.resl
       captures:
         1: keyword.control.conditional.resl
@@ -224,7 +244,7 @@ contexts:
         3: constant.language.boolean.resl
 
   service_field:
-    - match: (rpc)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)\s*\)\s*([A-Za-z][A-Za-z0-9_.]*)?\s*=\s*(\d+)
+    - match: (rpc)\s+([A-Za-z][A-Za-z0-9_.]*)\s*\(\s*([A-Za-z][A-Za-z0-9_.]*)?\s*\)\s*([A-Za-z][A-Za-z0-9_.]*)?\s*=\s*(\d+)
       scope: punctuation.section.service_field.resl
       captures:
         1: keyword.control.conditional
