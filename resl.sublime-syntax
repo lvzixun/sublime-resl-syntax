@@ -12,6 +12,7 @@ contexts:
     - include : import
     - include : type
     - include : component
+    - include : component_declare
     - include : component_extend
     - include : extend
     - include : enum
@@ -76,8 +77,16 @@ contexts:
         - include: attribute_field
         - include: option_field
 
+  component_declare:
+    - match: (component)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*(\d+)\s*$
+      scope: punctuation.section.component.resl
+      captures:
+        1: storage.type.class.resl
+        2: entity.name.class.resl
+        3: constant.numeric.resl
+
   component:
-    - match: (component)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*(\d+)\s*\{
+    - match: (component)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*(\d+)?\s*\{
       scope: punctuation.section.component.resl
       captures:
         1: storage.type.class.resl
@@ -98,7 +107,7 @@ contexts:
         - include: option_field
 
   component_extend:
-    - match: (component)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*(\d+)\s*=\s*([A-Za-z][A-Za-z0-9_\.]*)\s*\{
+    - match: (component)\s+([A-Za-z][A-Za-z0-9_\.]*)\s*(\d+)?\s*=\s*([A-Za-z][A-Za-z0-9_\.]*)\s*\{
       scope: punctuation.section.component.resl
       captures:
         1: storage.type.class.resl
